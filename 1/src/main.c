@@ -1,13 +1,11 @@
-#include <stdio.h>
 #include <errno.h>
+#include <stdio.h>
 
 #include "json.h"
-
 
 static void usage(char* name) {
 	printf("Usage: %s <filename>\n", name);
 }
-
 
 int main(int argc, char* argv[]) {
 	if (argc != 2) {

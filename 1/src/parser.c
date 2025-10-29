@@ -1,32 +1,32 @@
 #include "parser.h"
 #include "json.h"
 
-static void parserNext(Parser*);
-static void parseWs(Parser*);
-static Node parseValue(Parser*);
-// static Node parseArray(Parser*);
-// static Node parseObject(Parser*);
+static void parser_next(Parser*);
+static void parse_ws(Parser*);
+static Node parse_value(Parser*);
+// static Node parse_array(Parser*);
+// static Node parse_object(Parser*);
 
-static void parserNext(Parser* parser) {
+static void parser_next(Parser* parser) {
 	parser->current = parser->lookahead;
 	parser->lookahead = parser->input.p[parser->pos++ + 1];
 }
 
-static void parseWs(Parser* parser) {
+static void parse_ws(Parser* parser) {
 loop:
 	switch (parser->current) {
 	case 0x20:
 	case 0x09:
 	case 0x0a:
 	case 0x0d:
-		parserNext(parser);
+		parser_next(parser);
 		goto loop;
 	default:
 		return;
 	}
 }
 
-static Node parseValue(Parser* parser) {
+static Node parse_value(Parser* parser) {
 	unsigned int start = parser->pos;
 	switch (parser->current) {
 	case 'f':
@@ -40,19 +40,19 @@ static Node parseValue(Parser* parser) {
 	}
 
 lfalse:
-	parserNext(parser);
+	parser_next(parser);
 	if (parser->current != 'a')
 		goto error;
-	parserNext(parser);
+	parser_next(parser);
 	if (parser->current != 'l')
 		goto error;
-	parserNext(parser);
+	parser_next(parser);
 	if (parser->current != 's')
 		goto error;
-	parserNext(parser);
+	parser_next(parser);
 	if (parser->current != 'e')
 		goto error;
-	parserNext(parser);
+	parser_next(parser);
 	return (Node){
 		.type = N_BOOL,
 		.start = start,
@@ -60,16 +60,16 @@ lfalse:
 		._bool = 0,
 	};
 ltrue:
-	parserNext(parser);
+	parser_next(parser);
 	if (parser->current != 'r')
 		goto error;
-	parserNext(parser);
+	parser_next(parser);
 	if (parser->current != 'u')
 		goto error;
-	parserNext(parser);
+	parser_next(parser);
 	if (parser->current != 'e')
 		goto error;
-	parserNext(parser);
+	parser_next(parser);
 	return (Node){
 		.type = N_BOOL,
 		.start = start,
@@ -77,23 +77,23 @@ ltrue:
 		._bool = 1,
 	};
 lnull:
-	parserNext(parser);
+	parser_next(parser);
 	if (parser->current != 'u')
 		goto error;
-	parserNext(parser);
+	parser_next(parser);
 	if (parser->current != 'l')
 		goto error;
-	parserNext(parser);
+	parser_next(parser);
 	if (parser->current != 'l')
 		goto error;
-	parserNext(parser);
+	parser_next(parser);
 	return (Node){
 		.type = N_NULL,
 		.start = start,
 		.end = parser->pos,
 	};
 error:
-	parserNext(parser);
+	parser_next(parser);
 	return (Node){
 		.type = N_ERROR,
 		.start = start,
@@ -102,9 +102,9 @@ error:
 	};
 }
 
-Node parseJSON(Parser* parser) {
+Node parse_JSON(Parser* parser) {
 	parser->current = parser->input.p[parser->pos];
 	parser->lookahead = parser->input.p[parser->pos + 1];
-	parseWs(parser);
-	return parseValue(parser);
+	parse_ws(parser);
+	return parse_value(parser);
 }

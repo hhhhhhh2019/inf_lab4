@@ -1,12 +1,10 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
-
 #include <stdio.h>
 
 #include "json.h"
 #include "str.h"
-
 
 typedef struct {
 	Str input;
@@ -16,8 +14,9 @@ typedef struct {
 	char lookahead;
 } Parser;
 
-
-Node parseJSON(Parser*);
-
+Node parse_JSON(Parser*);
+static inline Parser parser_new(Str str) {
+	return (Parser){.input = str, .pos = 0};
+}
 
 #endif
