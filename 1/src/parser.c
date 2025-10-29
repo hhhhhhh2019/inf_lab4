@@ -2,6 +2,7 @@
 #include "json.h"
 
 #include <math.h>
+#include <stdlib.h>
 
 #ifdef DEBUG
 #define LOG(...) fprintf(stderr, __VA_ARGS__)
@@ -15,6 +16,7 @@ static void parser_next(Parser*);
 static void parse_ws(Parser*);
 static Node parse_value(Parser*);
 static Node parse_number(Parser*);
+static Node parse_string(Parser*);
 // static Node parse_array(Parser*);
 // static Node parse_object(Parser*);
 
@@ -171,6 +173,131 @@ result:
 	};
 }
 
+static Node parse_string(Parser* parser) {
+	unsigned int start = parser->pos;
+	char* string = malloc(1);
+	*string = 0;
+
+	parser_next(parser); // skip "
+
+	while (1) {
+		if (parser->current == 0) {
+			// TODO: throw error
+			break;
+		}
+
+		if (parser->current == '"')
+			break;
+
+		else if ((parser->current >> 5) == 0b110) {
+			int len = strlen(string);
+			string = realloc(string, len + 3);
+
+			string[len] = parser->current;
+			parser_next(parser);
+			string[len + 1] = parser->current;
+			parser_next(parser);
+			string[len + 2] = 0;
+
+			continue;
+		}
+
+		else if ((parser->current >> 4) == 0b1110) {
+			int len = strlen(string);
+			string = realloc(string, len + 4);
+
+			string[len] = parser->current;
+			parser_next(parser);
+			string[len + 1] = parser->current;
+			parser_next(parser);
+			string[len + 2] = parser->current;
+			parser_next(parser);
+			string[len + 3] = 0;
+
+			continue;
+		}
+
+		else if ((parser->current >> 3) == 0b11110) {
+			int len = strlen(string);
+			string = realloc(string, len + 5);
+
+			string[len] = parser->current;
+			parser_next(parser);
+			string[len + 1] = parser->current;
+			parser_next(parser);
+			string[len + 2] = parser->current;
+			parser_next(parser);
+			string[len + 3] = parser->current;
+			parser_next(parser);
+			string[len + 4] = 0;
+
+			continue;
+		} else {
+			int len = strlen(string);
+			string = realloc(string, len + 2);
+			string[len + 1] = 0;
+
+			if (parser->current != '\\') {
+				string[len] = parser->current;
+				parser_next(parser);
+				continue;
+			}
+
+			parser_next(parser);
+
+			switch (parser->current) {
+			case '"':
+				string[len] = 0x22;
+				parser_next(parser);
+				break;
+			case '\\':
+				string[len] = 0x5c;
+				parser_next(parser);
+				break;
+			case '/':
+				string[len] = 0x2f;
+				parser_next(parser);
+				break;
+			case 'b':
+				string[len] = 0x8;
+				parser_next(parser);
+				break;
+			case 'f':
+				string[len] = 0xc;
+				parser_next(parser);
+				break;
+			case 'n':
+				string[len] = 0xa;
+				parser_next(parser);
+				break;
+			case 'r':
+				string[len] = 0xd;
+				parser_next(parser);
+				break;
+			case 't':
+				string[len] = 0x9;
+				parser_next(parser);
+				break;
+			case 'u':
+				// TODO
+				break;
+			default:
+				// TODO: throw error
+				break;
+			}
+		}
+	}
+
+	parser_next(parser);
+
+	return (Node){
+		.type = N_STRING,
+		.start = start,
+		.end = parser->pos,
+		.string = string,
+	};
+}
+
 static Node parse_value(Parser* parser) {
 	LOG("parse value\n");
 	unsigned int start = parser->pos;
@@ -193,6 +320,8 @@ static Node parse_value(Parser* parser) {
 	case '9':
 	case '-':
 		return parse_number(parser);
+	case '"':
+		return parse_string(parser);
 	default:
 		goto error;
 	}
