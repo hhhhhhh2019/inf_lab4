@@ -1,6 +1,14 @@
 #include "parser.h"
 #include "json.h"
 
+#ifdef DEBUG
+#define LOG(...) fprintf(stderr, __VA_ARGS__)
+#else
+#define LOG(...)                                                               \
+	{                                                                          \
+	}
+#endif
+
 static void parser_next(Parser*);
 static void parse_ws(Parser*);
 static Node parse_value(Parser*);
@@ -10,9 +18,12 @@ static Node parse_value(Parser*);
 static void parser_next(Parser* parser) {
 	parser->current = parser->lookahead;
 	parser->lookahead = parser->input.p[parser->pos++ + 1];
+
+	LOG("%ld: %d %d\n", parser->pos, parser->current, parser->lookahead);
 }
 
 static void parse_ws(Parser* parser) {
+	LOG("parse ws\n");
 loop:
 	switch (parser->current) {
 	case 0x20:
@@ -27,6 +38,7 @@ loop:
 }
 
 static Node parse_value(Parser* parser) {
+	LOG("parse value\n");
 	unsigned int start = parser->pos;
 	switch (parser->current) {
 	case 'f':
@@ -105,6 +117,48 @@ error:
 Node parse_JSON(Parser* parser) {
 	parser->current = parser->input.p[parser->pos];
 	parser->lookahead = parser->input.p[parser->pos + 1];
+
+	LOG("%ld: %d %d\n", parser->pos, parser->current, parser->lookahead);
+
 	parse_ws(parser);
 	return parse_value(parser);
 }
+
+#ifdef DEBUG
+void print_node(Node node, int offset) {
+	for (int i = 0; i < offset; i++)
+		LOG("  ");
+
+	switch (node.type) {
+	case N_ERROR:
+		LOG("ERROR: %d\n", node.error);
+		break;
+	case N_BOOL:
+		LOG(node._bool ? "true"
+		               : "false"
+		                 "\n");
+		break;
+	case N_NULL:
+		LOG("NULL\n");
+		break;
+	case N_NUMBER:
+		LOG("%f\n", node.number);
+		break;
+	case N_STRING:
+		LOG("\"%s\"\n", node.string);
+		break;
+	case N_ARRAY:
+		LOG("ARRAY: %zu\n", node.length);
+		for (int i = 0; i < node.length; i++)
+			print_node(node.elements[i], offset + 1);
+		break;
+	case N_OBJECT:
+		LOG("OBJECT: %zu\n", node.count);
+		for (int i = 0; i < node.count; i++) {
+			LOG("%s:\n", node.fields[i].name);
+			print_node(node.fields[i].value, offset + 1);
+		}
+		break;
+	}
+}
+#endif

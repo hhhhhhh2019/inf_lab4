@@ -26,5 +26,6 @@ int main(int argc, char* argv[]) {
 
 	fclose(finp);
 
-	parse_JSON(&parser);
+	Node result = parse_JSON(&parser);
+	print_node(result, 0);
 }

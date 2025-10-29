@@ -18,5 +18,8 @@ Node parse_JSON(Parser*);
 static inline Parser parser_new(Str str) {
 	return (Parser){.input = str, .pos = 0};
 }
+#ifdef DEBUG
+void print_node(Node, int offset);
+#endif
 
 #endif
