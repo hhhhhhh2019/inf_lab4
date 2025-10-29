@@ -22,10 +22,13 @@ int main(int argc, char* argv[]) {
 		return errno;
 	}
 
-	Parser parser = parser_new(read_to_str(finp));
+	Parser parser = parser_from_file(finp);
 
 	fclose(finp);
 
 	Node result = parse_JSON(&parser);
 	print_node(result, 0);
+
+	node_free(result);
+	free(parser.input);
 }

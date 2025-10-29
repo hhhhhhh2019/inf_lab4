@@ -1,8 +1,10 @@
 #include "parser.h"
 #include "json.h"
 
+#include <assert.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef DEBUG
 #define LOG(...) fprintf(stderr, __VA_ARGS__)
@@ -22,10 +24,10 @@ static Node parse_object(Parser*);
 
 static void parser_next(Parser* parser) {
 	parser->current = parser->lookahead;
-	if (parser->pos >= parser->input.len - 2)
+	if (parser->pos >= parser->input_len - 2)
 		parser->lookahead = 0;
 	else
-		parser->lookahead = parser->input.p[++parser->pos + 1];
+		parser->lookahead = parser->input[++parser->pos + 1];
 
 	LOG("%ld: %d %d\n", parser->pos, parser->current, parser->lookahead);
 }
@@ -501,8 +503,8 @@ error:
 }
 
 Node parse_JSON(Parser* parser) {
-	parser->current = parser->input.p[parser->pos];
-	parser->lookahead = parser->input.p[parser->pos + 1];
+	parser->current = parser->input[parser->pos];
+	parser->lookahead = parser->input[parser->pos + 1];
 
 	LOG("%ld: %d %d\n", parser->pos, parser->current, parser->lookahead);
 
@@ -510,6 +512,28 @@ Node parse_JSON(Parser* parser) {
 	Node result = parse_value(parser);
 	parse_ws(parser);
 	return result;
+}
+
+void node_free(Node node) {
+	switch (node.type) {
+	case N_ARRAY:
+		for (int i = 0; i < node.length; i++)
+			node_free(node.elements[i]);
+		free(node.elements);
+		break;
+	case N_OBJECT:
+		for (int i = 0; i < node.count; i++) {
+			node_free(node.fields[i].value);
+			free(node.fields[i].name);
+		}
+		free(node.fields);
+		break;
+	case N_STRING:
+		free(node.string);
+		break;
+	default:
+		break;
+	}
 }
 
 #ifdef DEBUG
