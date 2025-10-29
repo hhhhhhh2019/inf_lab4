@@ -17,7 +17,10 @@ static Node parse_value(Parser*);
 
 static void parser_next(Parser* parser) {
 	parser->current = parser->lookahead;
-	parser->lookahead = parser->input.p[parser->pos++ + 1];
+	if (parser->pos >= parser->input.len - 2)
+		parser->lookahead = 0;
+	else
+		parser->lookahead = parser->input.p[++parser->pos + 1];
 
 	LOG("%ld: %d %d\n", parser->pos, parser->current, parser->lookahead);
 }
