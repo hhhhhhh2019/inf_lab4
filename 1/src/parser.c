@@ -18,7 +18,7 @@ static Node parse_value(Parser*);
 static Node parse_number(Parser*);
 static Node parse_string(Parser*);
 static Node parse_array(Parser*);
-// static Node parse_object(Parser*);
+static Node parse_object(Parser*);
 
 static void parser_next(Parser* parser) {
 	parser->current = parser->lookahead;
@@ -46,6 +46,7 @@ loop:
 }
 
 static Node parse_number(Parser* parser) {
+	LOG("parse number\n");
 	unsigned int start = parser->pos;
 
 	double sign = 1;
@@ -174,6 +175,7 @@ result:
 }
 
 static Node parse_string(Parser* parser) {
+	LOG("parse string\n");
 	unsigned int start = parser->pos;
 	char* string = malloc(1);
 	*string = 0;
@@ -299,21 +301,25 @@ static Node parse_string(Parser* parser) {
 }
 
 static Node parse_array(Parser* parser) {
+	LOG("parse array\n");
 	unsigned int start = parser->pos;
 	parser_next(parser);
 
 	Node* elements = malloc(0);
 	size_t length = 0;
 
+	if (parser->current == ']')
+		goto result;
+
 	while (1) {
 		parse_ws(parser);
-
-		if (parser->current == ']')
-			goto result;
 
 		elements = realloc(elements, sizeof(Node) * (++length));
 		elements[length - 1] = parse_value(parser);
 		parse_ws(parser);
+
+		if (parser->current == ']')
+			break;
 
 		if (parser->current == ',') {
 			parser_next(parser);
@@ -331,6 +337,71 @@ result:
 		.end = parser->pos,
 		.elements = elements,
 		.length = length,
+	};
+}
+
+static Node parse_object(Parser* parser) {
+	LOG("parse object\n");
+	unsigned int start = parser->pos;
+	parser_next(parser);
+
+	ObjectField* fields = malloc(0);
+	size_t count = 0;
+
+	if (parser->current == '}')
+		goto result;
+
+	while (1) {
+		parse_ws(parser);
+
+		if (parser->current != '"') {
+			// TODO
+			assert(0);
+		}
+
+		Node name = parse_string(parser);
+
+		if (name.type == N_ERROR) {
+			// TODO
+			assert(0);
+		}
+
+		parse_ws(parser);
+
+		if (parser->current != ':') {
+			// TODO
+			assert(0);
+		}
+
+		parser_next(parser);
+
+		parse_ws(parser);
+
+		fields = realloc(fields, sizeof(ObjectField) * (++count));
+		fields[count - 1].name = name.string;
+		fields[count - 1].value = parse_value(parser);
+
+		parse_ws(parser);
+
+		if (parser->current == '}')
+			break;
+
+		if (parser->current == ',') {
+			parser_next(parser);
+			continue;
+		}
+
+		// TODO: error
+	}
+
+result:
+	parser_next(parser);
+	return (Node){
+		.type = N_OBJECT,
+		.start = start,
+		.end = parser->pos,
+		.fields = fields,
+		.count = count,
 	};
 }
 
@@ -360,6 +431,8 @@ static Node parse_value(Parser* parser) {
 		return parse_string(parser);
 	case '[':
 		return parse_array(parser);
+	case '{':
+		return parse_object(parser);
 	default:
 		goto error;
 	}
@@ -468,7 +541,9 @@ void print_node(Node node, int offset) {
 	case N_OBJECT:
 		LOG("OBJECT: %zu\n", node.count);
 		for (int i = 0; i < node.count; i++) {
-			LOG("%s:\n", node.fields[i].name);
+			for (int i = 0; i < offset + 1; i++)
+				LOG("  ");
+			LOG("%s\n", node.fields[i].name);
 			print_node(node.fields[i].value, offset + 1);
 		}
 		break;
