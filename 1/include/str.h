@@ -3,6 +3,7 @@
 
 #include <assert.h>
 #include <stddef.h>
+#include <stdio.h>
 #include <string.h>
 
 typedef struct {
@@ -26,5 +27,7 @@ static inline Str str_slice(Str str, size_t start, size_t end) {
 		.len = end - start,
 	};
 }
+
+Str read_to_str(FILE*);
 
 #endif // STRING_H_

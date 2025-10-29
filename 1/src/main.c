@@ -1,7 +1,9 @@
 #include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "json.h"
+#include "parser.h"
 
 static void usage(char* name) {
 	printf("Usage: %s <filename>\n", name);
@@ -20,5 +22,9 @@ int main(int argc, char* argv[]) {
 		return errno;
 	}
 
+	Parser parser = parser_new(read_to_str(finp));
+
 	fclose(finp);
+
+	parse_JSON(&parser);
 }
