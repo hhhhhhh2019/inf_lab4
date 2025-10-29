@@ -17,7 +17,7 @@ static void parse_ws(Parser*);
 static Node parse_value(Parser*);
 static Node parse_number(Parser*);
 static Node parse_string(Parser*);
-// static Node parse_array(Parser*);
+static Node parse_array(Parser*);
 // static Node parse_object(Parser*);
 
 static void parser_next(Parser* parser) {
@@ -298,6 +298,42 @@ static Node parse_string(Parser* parser) {
 	};
 }
 
+static Node parse_array(Parser* parser) {
+	unsigned int start = parser->pos;
+	parser_next(parser);
+
+	Node* elements = malloc(0);
+	size_t length = 0;
+
+	while (1) {
+		parse_ws(parser);
+
+		if (parser->current == ']')
+			goto result;
+
+		elements = realloc(elements, sizeof(Node) * (++length));
+		elements[length - 1] = parse_value(parser);
+		parse_ws(parser);
+
+		if (parser->current == ',') {
+			parser_next(parser);
+			continue;
+		}
+
+		// TODO: error
+	}
+
+result:
+	parser_next(parser);
+	return (Node){
+		.type = N_ARRAY,
+		.start = start,
+		.end = parser->pos,
+		.elements = elements,
+		.length = length,
+	};
+}
+
 static Node parse_value(Parser* parser) {
 	LOG("parse value\n");
 	unsigned int start = parser->pos;
@@ -322,6 +358,8 @@ static Node parse_value(Parser* parser) {
 		return parse_number(parser);
 	case '"':
 		return parse_string(parser);
+	case '[':
+		return parse_array(parser);
 	default:
 		goto error;
 	}
@@ -411,9 +449,7 @@ void print_node(Node node, int offset) {
 		LOG("ERROR: %d\n", node.error);
 		break;
 	case N_BOOL:
-		LOG(node._bool ? "true"
-		               : "false"
-		                 "\n");
+		LOG(node._bool ? "true\n" : "false\n");
 		break;
 	case N_NULL:
 		LOG("NULL\n");
