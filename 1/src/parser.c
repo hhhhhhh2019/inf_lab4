@@ -1,6 +1,8 @@
 #include "parser.h"
 #include "json.h"
 
+#include <math.h>
+
 #ifdef DEBUG
 #define LOG(...) fprintf(stderr, __VA_ARGS__)
 #else
@@ -12,6 +14,7 @@
 static void parser_next(Parser*);
 static void parse_ws(Parser*);
 static Node parse_value(Parser*);
+static Node parse_number(Parser*);
 // static Node parse_array(Parser*);
 // static Node parse_object(Parser*);
 
@@ -40,6 +43,134 @@ loop:
 	}
 }
 
+static Node parse_number(Parser* parser) {
+	unsigned int start = parser->pos;
+
+	double sign = 1;
+	double _int = 0;
+	double frac = 0;
+	double exp = 0;
+	double exp_sign = 1;
+
+	if (parser->current == '-') {
+		sign = -1;
+		parser_next(parser);
+	}
+
+	if (parser->current == '0') {
+		parser_next(parser);
+		return (Node){
+			.type = N_NUMBER,
+			.start = start,
+			.end = parser->pos,
+			.number = 0,
+		};
+	}
+
+	switch (parser->current) {
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+		_int = _int * 10 + parser->current - '0';
+		parser_next(parser);
+	default:
+		break;
+	}
+
+int_part:
+	switch (parser->current) {
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+		_int = _int * 10 + parser->current - '0';
+		parser_next(parser);
+		goto int_part;
+	default:
+		break;
+	}
+
+	if (parser->current != '.')
+		goto exp_part;
+
+	double frac_mul = 0.1;
+	parser_next(parser);
+frac_part:
+	// TODO: first char is non digit error check
+	switch (parser->current) {
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+		frac += (parser->current - '0') * frac_mul;
+		frac_mul *= 0.1;
+		parser_next(parser);
+		goto frac_part;
+	default:
+		break;
+	}
+
+	if (parser->current != 'e' && parser->current != 'E')
+		goto result;
+
+	parser_next(parser);
+exp_part:
+	switch (parser->current) {
+	case '-':
+		exp_sign = -1;
+	case '+':
+		parser_next(parser);
+	default:
+		break;
+	}
+
+	// TODO: first non digit check
+	switch (parser->current) {
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+		exp = exp * 10 + parser->current - '0';
+		parser_next(parser);
+		goto exp_part;
+	default:
+		break;
+	}
+
+result:
+	LOG("number: %f %f %f %f %f\n", sign, _int, frac, exp_sign, exp);
+	return (Node){
+		.type = N_NUMBER,
+		.start = start,
+		.end = parser->pos,
+		.number = (_int + frac) * pow(10, exp * exp_sign) * sign,
+	};
+}
+
 static Node parse_value(Parser* parser) {
 	LOG("parse value\n");
 	unsigned int start = parser->pos;
@@ -50,6 +181,18 @@ static Node parse_value(Parser* parser) {
 		goto lnull;
 	case 't':
 		goto ltrue;
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+	case '-':
+		return parse_number(parser);
 	default:
 		goto error;
 	}
@@ -124,7 +267,9 @@ Node parse_JSON(Parser* parser) {
 	LOG("%ld: %d %d\n", parser->pos, parser->current, parser->lookahead);
 
 	parse_ws(parser);
-	return parse_value(parser);
+	Node result = parse_value(parser);
+	parse_ws(parser);
+	return result;
 }
 
 #ifdef DEBUG

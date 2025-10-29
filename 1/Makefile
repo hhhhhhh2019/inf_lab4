@@ -3,7 +3,7 @@ DEBUG?=1
 CC?=gcc
 
 CC_FLAGS=-c -I./include -Wall -Werror
-LD_FLAGS=-Wall -Werror
+LD_FLAGS=-lm -Wall -Werror
 
 ifeq ($(DEBUG), 1)
 	CC_FLAGS+=-ggdb -Og -DDEBUG
