@@ -31,4 +31,5 @@ int main(int argc, char* argv[]) {
 
 	node_free(result);
 	free(parser.input);
+	free(parser.errors);
 }

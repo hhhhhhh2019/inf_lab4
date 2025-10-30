@@ -6,6 +6,16 @@
 
 #include "json.h"
 
+enum ErrorType {
+	E_SYNTAX,
+};
+
+typedef struct {
+	enum ErrorType type;
+	unsigned int start;
+	unsigned int end;
+} Error;
+
 typedef struct {
 	char* input;
 	size_t input_len;
@@ -13,7 +23,16 @@ typedef struct {
 
 	char current;
 	char lookahead;
+
+	size_t errors_count;
+	Error* errors;
 } Parser;
+
+static inline void parser_add_error(Parser* parser, Error error) {
+	parser->errors =
+		realloc(parser->errors, sizeof(Error) * (++parser->errors_count));
+	parser->errors[parser->errors_count - 1] = error;
+}
 
 Node parse_JSON(Parser*);
 static inline Parser parser_from_file(FILE* f) {

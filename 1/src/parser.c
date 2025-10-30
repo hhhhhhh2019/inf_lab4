@@ -66,8 +66,6 @@ static Node parse_number(Parser* parser) {
 		parser_next(parser);
 		return (Node){
 			.type = N_NUMBER,
-			.start = start,
-			.end = parser->pos,
 			.number = 0,
 		};
 	}
@@ -85,7 +83,7 @@ static Node parse_number(Parser* parser) {
 		_int = _int * 10 + parser->current - '0';
 		parser_next(parser);
 	default:
-		break;
+		goto error;
 	}
 
 int_part:
@@ -170,9 +168,19 @@ result:
 	LOG("number: %f %f %f %f %f\n", sign, _int, frac, exp_sign, exp);
 	return (Node){
 		.type = N_NUMBER,
-		.start = start,
-		.end = parser->pos,
 		.number = (_int + frac) * pow(10, exp * exp_sign) * sign,
+	};
+
+error:
+	// TODO
+	LOG("number failed\n");
+	parser_add_error(parser, (Error){
+								 .type = E_SYNTAX,
+								 .start = start,
+								 .end = parser->pos,
+							 });
+	return (Node){
+		.type = N_NULL,
 	};
 }
 
@@ -186,8 +194,16 @@ static Node parse_string(Parser* parser) {
 
 	while (1) {
 		if (parser->current == 0) {
-			// TODO: throw error
-			break;
+			// TODO
+			LOG("string failed\n");
+			parser_add_error(parser, (Error){
+										 .type = E_SYNTAX,
+										 .start = start,
+										 .end = parser->pos,
+									 });
+			return (Node){
+				.type = N_NULL,
+			};
 		}
 
 		if (parser->current == '"')
@@ -286,7 +302,14 @@ static Node parse_string(Parser* parser) {
 				// TODO
 				break;
 			default:
-				// TODO: throw error
+				// TODO
+				LOG("string undefined escape sequence\n");
+				parser_add_error(parser, (Error){
+											 .type = E_SYNTAX,
+											 .start = parser->pos - 1,
+											 .end = parser->pos,
+										 });
+				parser_next(parser);
 				break;
 			}
 		}
@@ -296,8 +319,6 @@ static Node parse_string(Parser* parser) {
 
 	return (Node){
 		.type = N_STRING,
-		.start = start,
-		.end = parser->pos,
 		.string = string,
 	};
 }
@@ -328,15 +349,18 @@ static Node parse_array(Parser* parser) {
 			continue;
 		}
 
-		// TODO: error
+		// TODO
+		parser_add_error(parser, (Error){
+									 .type = E_SYNTAX,
+									 .start = start,
+									 .end = parser->pos,
+								 });
 	}
 
 result:
 	parser_next(parser);
 	return (Node){
 		.type = N_ARRAY,
-		.start = start,
-		.end = parser->pos,
 		.elements = elements,
 		.length = length,
 	};
@@ -358,12 +382,16 @@ static Node parse_object(Parser* parser) {
 
 		if (parser->current != '"') {
 			// TODO
-			assert(0);
+			parser_add_error(parser, (Error){
+										 .type = E_SYNTAX,
+										 .start = start,
+										 .end = parser->pos,
+									 });
 		}
 
 		Node name = parse_string(parser);
 
-		if (name.type == N_ERROR) {
+		if (name.type == N_NULL) {
 			// TODO
 			assert(0);
 		}
@@ -372,6 +400,11 @@ static Node parse_object(Parser* parser) {
 
 		if (parser->current != ':') {
 			// TODO
+			parser_add_error(parser, (Error){
+										 .type = E_SYNTAX,
+										 .start = start,
+										 .end = parser->pos,
+									 });
 			assert(0);
 		}
 
@@ -393,15 +426,18 @@ static Node parse_object(Parser* parser) {
 			continue;
 		}
 
-		// TODO: error
+		// TODO
+		parser_add_error(parser, (Error){
+									 .type = E_SYNTAX,
+									 .start = start,
+									 .end = parser->pos,
+								 });
 	}
 
 result:
 	parser_next(parser);
 	return (Node){
 		.type = N_OBJECT,
-		.start = start,
-		.end = parser->pos,
 		.fields = fields,
 		.count = count,
 	};
@@ -455,8 +491,6 @@ lfalse:
 	parser_next(parser);
 	return (Node){
 		.type = N_BOOL,
-		.start = start,
-		.end = parser->pos,
 		._bool = 0,
 	};
 ltrue:
@@ -472,8 +506,6 @@ ltrue:
 	parser_next(parser);
 	return (Node){
 		.type = N_BOOL,
-		.start = start,
-		.end = parser->pos,
 		._bool = 1,
 	};
 lnull:
@@ -489,16 +521,16 @@ lnull:
 	parser_next(parser);
 	return (Node){
 		.type = N_NULL,
-		.start = start,
-		.end = parser->pos,
 	};
 error:
 	parser_next(parser);
+	parser_add_error(parser, (Error){
+								 .type = E_SYNTAX,
+								 .start = start,
+								 .end = parser->pos,
+							 });
 	return (Node){
-		.type = N_ERROR,
-		.start = start,
-		.end = parser->pos,
-		.error = E_SYNTAX,
+		.type = N_NULL,
 	};
 }
 
@@ -542,9 +574,6 @@ void print_node(Node node, int offset) {
 		LOG("  ");
 
 	switch (node.type) {
-	case N_ERROR:
-		LOG("ERROR: %d\n", node.error);
-		break;
 	case N_BOOL:
 		LOG(node._bool ? "true\n" : "false\n");
 		break;
