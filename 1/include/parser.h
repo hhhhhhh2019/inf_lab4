@@ -52,6 +52,7 @@ static inline Parser parser_from_file(FILE* f) {
 	};
 }
 void node_free(Node);
+void node_to_bin(Node, FILE*);
 #ifdef DEBUG
 void print_node(Node, int offset);
 #endif

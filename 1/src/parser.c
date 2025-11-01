@@ -1,5 +1,6 @@
 #include "parser.h"
 #include "json.h"
+#include "utils.h"
 
 #include <assert.h>
 #include <math.h>
@@ -84,7 +85,6 @@ static Node parse_number(Parser* parser) {
 		parser_next(parser);
 		break;
 	default:
-		printf("----------- %d\n", __LINE__);
 		goto error;
 	}
 
@@ -566,6 +566,35 @@ void node_free(Node node) {
 		free(node.string);
 		break;
 	default:
+		break;
+	}
+}
+
+void node_to_bin(Node node, FILE* file) {
+	write_uint8(file, node.type);
+	switch (node.type) {
+	case (N_NULL):
+		break;
+	case (N_BOOL):
+		write_uint8(file, node._bool);
+		break;
+	case (N_NUMBER):
+		write_double(file, node.number);
+		break;
+	case (N_STRING):
+		write_string(file, node.string);
+		break;
+	case (N_ARRAY):
+		write_uint32(file, node.length);
+		for (int i = 0; i < node.length; i++)
+			node_to_bin(node.elements[i], file);
+		break;
+	case (N_OBJECT):
+		write_uint32(file, node.count);
+		for (int i = 0; i < node.count; i++) {
+			write_string(file, node.fields[i].name);
+			node_to_bin(node.fields[i].value, file);
+		}
 		break;
 	}
 }
