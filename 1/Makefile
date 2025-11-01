@@ -2,7 +2,7 @@ DEBUG?=1
 
 CC?=gcc
 
-CC_FLAGS=-c -I./include -Wall -Werror
+CC_FLAGS=-c -I./include -Wall -Werror -MMD -MP
 LD_FLAGS=-lm -Wall -Werror
 
 ifeq ($(DEBUG), 1)
@@ -23,18 +23,24 @@ ifeq ($(DEBUG), 1)
 endif
 
 
-SOURCES=$(wildcard src/*.c)
-OBJECTS=$(SOURCES:src/%.c=build/%.o)
+SRC=$(wildcard src/*.c)
+BUILD=build
+OBJ=$(SRC:src/%.c=$(BUILD)/%.o)
+DEP=$(OBJ:.o=.d)
 
 
-build/%.o: src/%.c
-	@mkdir -p build
-	$(CC) $(CC_FLAGS) -o $@ $^
+.PHONY: all clean
 
+%/:
+	@mkdir -p $@
 
-all: $(OBJECTS)
-	$(CC) $(LD_FLAGS) -o ./build/main $^
+$(BUILD)/%.o: src/%.c | $(BUILD)/
+	$(CC) $(CC_FLAGS) -o $@ $<
 
+all: $(OBJ)
+	$(CC) $(LD_FLAGS) -o $(BUILD)/main $^
 
 clean:
-	rm -rf build
+	rm -r $(BUILD)
+
+-include $(DEP)

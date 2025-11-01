@@ -82,7 +82,9 @@ static Node parse_number(Parser* parser) {
 	case '9':
 		_int = _int * 10 + parser->current - '0';
 		parser_next(parser);
+		break;
 	default:
+		printf("----------- %d\n", __LINE__);
 		goto error;
 	}
 
