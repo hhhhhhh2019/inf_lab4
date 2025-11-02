@@ -63,15 +63,11 @@ static Node parse_number(Parser* parser) {
 		parser_next(parser);
 	}
 
-	if (parser->current == '0') {
-		parser_next(parser);
-		return (Node){
-			.type = N_NUMBER,
-			.number = 0,
-		};
-	}
-
+int_part:
 	switch (parser->current) {
+	case '0':
+		parser_next(parser);
+		goto frac_part;
 	case '1':
 	case '2':
 	case '3':
@@ -88,7 +84,7 @@ static Node parse_number(Parser* parser) {
 		goto error;
 	}
 
-int_part:
+int_part_loop:
 	switch (parser->current) {
 	case '0':
 	case '1':
@@ -102,17 +98,19 @@ int_part:
 	case '9':
 		_int = _int * 10 + parser->current - '0';
 		parser_next(parser);
-		goto int_part;
+		goto int_part_loop;
 	default:
 		break;
 	}
 
+frac_part:
 	if (parser->current != '.')
 		goto exp_part;
 
 	double frac_mul = 0.1;
 	parser_next(parser);
-frac_part:
+
+frac_part_loop:
 	// TODO: first char is non digit error check
 	switch (parser->current) {
 	case '0':
@@ -128,16 +126,15 @@ frac_part:
 		frac += (parser->current - '0') * frac_mul;
 		frac_mul *= 0.1;
 		parser_next(parser);
-		goto frac_part;
+		goto frac_part_loop;
 	default:
 		break;
 	}
 
+exp_part:
 	if (parser->current != 'e' && parser->current != 'E')
 		goto result;
 
-	parser_next(parser);
-exp_part:
 	switch (parser->current) {
 	case '-':
 		exp_sign = -1;
@@ -147,6 +144,7 @@ exp_part:
 		break;
 	}
 
+exp_part_loop:
 	// TODO: first non digit check
 	switch (parser->current) {
 	case '0':
@@ -161,7 +159,7 @@ exp_part:
 	case '9':
 		exp = exp * 10 + parser->current - '0';
 		parser_next(parser);
-		goto exp_part;
+		goto exp_part_loop;
 	default:
 		break;
 	}
