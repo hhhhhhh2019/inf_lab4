@@ -1,3 +1,5 @@
+MAKEFLAGS += -k
+
 DEBUG?=1
 
 CC?=gcc
@@ -31,7 +33,7 @@ DEP=$(OBJ:.o=.d)
 TESTS=$(wildcard tests/*.in)
 
 
-.PHONY: all clean
+.PHONY: all clean test
 
 %/:
 	@mkdir -p $@
@@ -50,8 +52,8 @@ clean:
 -include $(DEP)
 
 tests/%.in: tests/%.out
-	@diff -q <(build/main $@ 2>/dev/null) <(xxd -r $<) || \
-	(echo "test $@ failed"; exit 1) && \
+	@diff -q <(build/main $@ 2>/dev/null) <(xxd -r $<) >/dev/null || \
+	(echo "test $@ failed"; false) && \
 	(echo "test $@ passed")
 
 test: build $(TESTS)
