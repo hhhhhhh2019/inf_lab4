@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 MAKEFLAGS += -k
 
 DEBUG?=1
@@ -51,7 +52,9 @@ clean:
 
 -include $(DEP)
 
-tests/%.in: tests/%.out
+FORCE: ;
+
+tests/%.in: tests/%.out FORCE
 	@diff -q <(build/main $@ 2>/dev/null) <(xxd -r $<) >/dev/null || \
 	(echo "test $@ failed"; \
 	 build/main $@ 2>/dev/null | xxd; \
