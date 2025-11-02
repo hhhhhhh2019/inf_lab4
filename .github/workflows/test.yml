@@ -16,6 +16,8 @@ jobs:
 
     - name: Build parser
       run: make build
+      working-directory: ./1
 
     - name: Run tests
       run: make test
+      working-directory: ./1
