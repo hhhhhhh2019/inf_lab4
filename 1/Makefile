@@ -45,8 +45,7 @@ $(BUILD)/%.o: src/%.c | $(BUILD)/
 	$(CC) $(CC_FLAGS) -o $@ $<
 
 build: $(OBJ)
-	$(CC) --version
-	$(CC) $(LD_FLAGS) -o "$(BUILD)/$(OUT)" $^
+	$(CC) -o "$(BUILD)/$(OUT)" $^ $(LD_FLAGS)
 
 all: build
 
