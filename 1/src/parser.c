@@ -135,6 +135,8 @@ exp_part:
 	if (parser->current != 'e' && parser->current != 'E')
 		goto result;
 
+	parser_next(parser);
+
 	switch (parser->current) {
 	case '-':
 		exp_sign = -1;
