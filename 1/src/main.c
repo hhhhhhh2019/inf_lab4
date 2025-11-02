@@ -27,7 +27,9 @@ int main(int argc, char* argv[]) {
 	fclose(finp);
 
 	Node result = parse_JSON(&parser);
+	#ifdef DEBUG
 	print_node(result, 0);
+	#endif
 
 	FILE* fout = stdout;
 

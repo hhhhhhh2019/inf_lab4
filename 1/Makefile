@@ -1,7 +1,9 @@
 SHELL := /bin/bash
 MAKEFLAGS += -k
 
-DEBUG?=1
+OUT=json2bin
+
+DEBUG?=0
 
 CC?=gcc
 
@@ -43,21 +45,21 @@ $(BUILD)/%.o: src/%.c | $(BUILD)/
 	$(CC) $(CC_FLAGS) -o $@ $<
 
 build: $(OBJ)
-	$(CC) $(LD_FLAGS) -o $(BUILD)/main $^
+	$(CC) $(LD_FLAGS) -o "$(BUILD)/$(OUT)" $^
 
 all: build
 
 clean:
-	rm -r $(BUILD)
+	rm -r "$(BUILD)"
 
 -include $(DEP)
 
 FORCE: ;
 
 tests/%.in: tests/%.out FORCE
-	@diff -q <(build/main $@ 2>/dev/null) <(xxd -r $<) >/dev/null || \
+	@diff -q <("$(BUILD)/$(OUT)" $@ 2>/dev/null) <(xxd -r $<) >/dev/null || \
 	(echo "test $@ failed"; \
-	 build/main $@ 2>/dev/null | xxd; \
+	 "$(BUILD)/$(OUT)" $@ 2>/dev/null | xxd; \
 	 xxd -r $< | xxd; false) && \
 	(echo "test $@ passed")
 
