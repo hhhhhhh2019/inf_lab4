@@ -28,6 +28,8 @@ BUILD=build
 OBJ=$(SRC:src/%.c=$(BUILD)/%.o)
 DEP=$(OBJ:.o=.d)
 
+TESTS=$(wildcard tests/*.in)
+
 
 .PHONY: all clean
 
@@ -37,10 +39,19 @@ DEP=$(OBJ:.o=.d)
 $(BUILD)/%.o: src/%.c | $(BUILD)/
 	$(CC) $(CC_FLAGS) -o $@ $<
 
-all: $(OBJ)
+build: $(OBJ)
 	$(CC) $(LD_FLAGS) -o $(BUILD)/main $^
+
+all: build
 
 clean:
 	rm -r $(BUILD)
 
 -include $(DEP)
+
+tests/%.in: tests/%.out
+	@diff -q <(build/main $@ 2>/dev/null) <(xxd -r $<) || \
+	(echo "test $@ failed"; exit 1) && \
+	(echo "test $@ passed")
+
+test: build $(TESTS)
