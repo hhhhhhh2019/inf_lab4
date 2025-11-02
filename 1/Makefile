@@ -53,7 +53,9 @@ clean:
 
 tests/%.in: tests/%.out
 	@diff -q <(build/main $@ 2>/dev/null) <(xxd -r $<) >/dev/null || \
-	(echo "test $@ failed"; false) && \
+	(echo "test $@ failed"; \
+	 build/main $@ 2>/dev/null | xxd; \
+	 xxd -r $< | xxd; false) && \
 	(echo "test $@ passed")
 
 test: build $(TESTS)
