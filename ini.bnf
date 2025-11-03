@@ -1,0 +1,16 @@
+<ini_file> ::= { <section> | <global_assignment> | <comment> | <empty_line> }*
+<section> ::= "[" <section_name> "]" <newline> { <assignment> | <comment> | <empty_line> }*
+<section_name> ::= <identifier>
+<assignment> ::= <key> "=" <value> <newline>
+<global_assignment> ::= <key> "=" <value> <newline>
+<key> ::= <identifier>
+<value> ::= <text>
+<comment> ::= <comment_char> <text> <newline>
+<empty_line> ::= <newline>
+<comment_char> ::= ";" | "#"
+<identifier> ::= <letter> { <letter> | <digit> | "_" | "-" }*
+<text> ::= { <any_char_except_newline> }*
+<newline> ::= "\n" | "\r\n"
+<letter> ::= "a" | ... | "z" | "A" | ... | "Z"
+<digit> ::= "0" | ... | "9"
+<any_char_except_newline> ::= <any_character_excluding_newline_and_null>
