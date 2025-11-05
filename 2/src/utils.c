@@ -34,7 +34,7 @@ uint8_t read_uint8(FILE* file) {
 }
 
 uint32_t read_uint32(FILE* file) {
-	uint32_t result;
+	uint32_t result = 0;
 	unsigned char buf[4];
 	fread(&buf, 4, 1, file);
 	for (int i = 0; i < 4; i++)
@@ -47,7 +47,7 @@ double read_double(FILE* file) {
 	unsigned char buf[8];
 	fread(&buf, 8, 1, file);
 	for (int i = 0; i < 8; i++)
-		result |= buf[i] << i * 8;
+		result |= (uint64_t)buf[i] << (i * 8);
 	return *((double*)&result);
 }
 

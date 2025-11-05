@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	if (parse_object(finp, NULL, "") != 0) {
+	if (parse_object(finp, NULL, NULL) != 0) {
 		fprintf(stderr, "root element must be object!\n");
 		exit(1);
 	}
