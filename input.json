@@ -4,7 +4,7 @@
 		"time": "08:10",
 		"name": "Алгебра и алгоритмы",
 		"type": "practice",
-		"teacher": "Иванов Иван Иванович",
+		"teacher": "Иванов Иван\" Иванович",
 		"format": "inabsentia",
 		"link": "zoom link"
 	},
@@ -14,7 +14,7 @@
 		"time": "09:50",
 		"name": "Математический анализ",
 		"type": "practice",
-		"teacher": "Пётр Петров Петрович",
+		"teacher": "Пётр [Петров] Петрович",
 		"format": "inperson",
 		"place": "Кронверкский пр., д.49, лит.А",
 		"room": 1308

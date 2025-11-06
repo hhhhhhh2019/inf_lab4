@@ -1,0 +1,217 @@
+<object>
+  <member name="e4d59045f48bd31194e7798740dffbff">
+    <object>
+      <member name="date">
+        <string value="30.11.2025"/>
+      <member/>
+      <member name="time">
+        <string value="08:10"/>
+      <member/>
+      <member name="name">
+        <string value="Алгебра и алгоритмы"/>
+      <member/>
+      <member name="type">
+        <string value="practice"/>
+      <member/>
+      <member name="teacher">
+        <string value="Иванов Иван\" Иванович"/>
+      <member/>
+      <member name="format">
+        <string value="inabsentia"/>
+      <member/>
+      <member name="link">
+        <string value="zoom link"/>
+      <member/>
+<object/>
+  <member/>
+  <member name="e9b086576fdcd07c9a78c3517fe30de7">
+    <object>
+      <member name="date">
+        <string value="30.11.2025"/>
+      <member/>
+      <member name="time">
+        <string value="09:50"/>
+      <member/>
+      <member name="name">
+        <string value="Математический анализ"/>
+      <member/>
+      <member name="type">
+        <string value="practice"/>
+      <member/>
+      <member name="teacher">
+        <string value="Пётр [Петров] Петрович"/>
+      <member/>
+      <member name="format">
+        <string value="inperson"/>
+      <member/>
+      <member name="place">
+        <string value="Кронверкский пр., д.49, лит.А"/>
+      <member/>
+      <member name="room">
+        <number value=1308.000000/>
+      <member/>
+<object/>
+  <member/>
+  <member name="f61a5c410946e0bbabb2493b79221b64">
+    <object>
+      <member name="date">
+        <string value="30.11.2025"/>
+      <member/>
+      <member name="time">
+        <string value="11:30"/>
+      <member/>
+      <member name="name">
+        <string value="Математический анализ"/>
+      <member/>
+      <member name="type">
+        <string value="lecture"/>
+      <member/>
+      <member name="teacher">
+        <string value="Пётр Петров Петрович"/>
+      <member/>
+      <member name="format">
+        <string value="inperson"/>
+      <member/>
+      <member name="place">
+        <string value="Кронверкский пр., д.49, лит.А"/>
+      <member/>
+      <member name="room">
+        <number value=1411.000000/>
+      <member/>
+<object/>
+  <member/>
+  <member name="e9330c8b2e55f3a0a6edea35bdbefb1d">
+    <object>
+      <member name="date">
+        <string value="30.10.2025"/>
+      <member/>
+      <member name="time">
+        <string value="13:30"/>
+      <member/>
+      <member name="name">
+        <string value="Алгебра и алгоритмы"/>
+      <member/>
+      <member name="type">
+        <string value="lecture"/>
+      <member/>
+      <member name="teacher">
+        <string value="Зимоздра Татьяна Испульевна"/>
+      <member/>
+      <member name="format">
+        <string value="inperson"/>
+      <member/>
+      <member name="place">
+        <string value="Кронверкский пр., д.49, лит.А"/>
+      <member/>
+      <member name="room">
+        <number value=1410.000000/>
+      <member/>
+<object/>
+  <member/>
+  <member name="4703a91571b5e6a98daa3637197eacff">
+    <object>
+      <member name="date">
+        <string value="30.11.2025"/>
+      <member/>
+      <member name="time">
+        <string value="18:00"/>
+      <member/>
+      <member name="name">
+        <string value="Беговой клуб"/>
+      <member/>
+      <member name="type">
+        <string value="sport"/>
+      <member/>
+      <member name="teacher">
+        <string value="Трифонов Владислав Олегович"/>
+      <member/>
+      <member name="format">
+        <string value="sport"/>
+      <member/>
+      <member name="place">
+        <string value="Альпийский переулок д.15Б к.2, лит.А"/>
+      <member/>
+<object/>
+  <member/>
+  <member name="c7d0d0ea4ecacb739afcef934231b7bc">
+    <object>
+      <member name="date">
+        <string value="27.11.2025"/>
+      <member/>
+      <member name="time">
+        <string value="13:30"/>
+      <member/>
+      <member name="name">
+        <string value="Интерестная история России"/>
+      <member/>
+      <member name="teacher">
+        <string value="Александр Данилович Меншиков"/>
+      <member/>
+      <member name="type">
+        <string value="lecture"/>
+      <member/>
+      <member name="format">
+        <string value="inperson"/>
+      <member/>
+      <member name="place">
+        <string value="Кронверкский пр., д.49, лит.А"/>
+      <member/>
+      <member name="room">
+        <number value=1020.000000/>
+      <member/>
+<object/>
+  <member/>
+  <member name="51a75a8d23a89e005d5bfb8daa800a7c">
+    <object>
+      <member name="date">
+        <string value="27.11.2025"/>
+      <member/>
+      <member name="time">
+        <string value="17:10"/>
+      <member/>
+      <member name="name">
+        <string value="Интерестная история России"/>
+      <member/>
+      <member name="teacher">
+        <string value="Александр Данилович Меншиков"/>
+      <member/>
+      <member name="type">
+        <string value="practice"/>
+      <member/>
+      <member name="format">
+        <string value="inperson"/>
+      <member/>
+      <member name="place">
+        <string value="Кронверкский пр., д.49, лит.А"/>
+      <member/>
+      <member name="room">
+        <number value=1020.000000/>
+      <member/>
+<object/>
+  <member/>
+  <member name="2e35af6dff67762c97eb7ab4b7fea927">
+    <object>
+      <member name="date">
+        <string value="27.11.2025"/>
+      <member/>
+      <member name="time">
+        <string value="6:00"/>
+      <member/>
+      <member name="name">
+        <string value="Беговой клуб"/>
+      <member/>
+      <member name="teacher">
+        <string value="Трифонов Владислав Олегович"/>
+      <member/>
+      <member name="type">
+        <string value="sport"/>
+      <member/>
+      <member name="format">
+        <string value="sport"/>
+      <member/>
+      <member name="place">
+        <string value="Альпийский переулок д.15Б к.2, лит.А"/>
+      <member/>
+<object/>
+  <member/>
+<object/>
