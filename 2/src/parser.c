@@ -109,7 +109,35 @@ int parse_string(FILE* file, char* field_name, char* parent_name) {
 	}
 
 	char* str = read_string(file);
-	printf("%s=\"%s\"\n", field_name, str);
+	printf("%s=\"", field_name);
+	for (int i = 0; i < strlen(str); i++) {
+		switch (str[i]) {
+		case '"':
+			printf("\\\"");
+			break;
+		case '\n':
+			printf("\\n");
+			break;
+		case '\b':
+			printf("\\b");
+			break;
+		case '\t':
+			printf("\\t");
+			break;
+		case '\r':
+			printf("\\r");
+			break;
+		case '\f':
+			printf("\\f");
+			break;
+		case '\\':
+			printf("\\\\");
+			break;
+		default:
+			printf("%c", str[i]);
+		}
+	}
+	printf("\"\n");
 	free(str);
 
 	return 0;

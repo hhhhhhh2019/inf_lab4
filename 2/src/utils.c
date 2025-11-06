@@ -43,12 +43,12 @@ uint32_t read_uint32(FILE* file) {
 }
 
 double read_double(FILE* file) {
-	uint64_t result;
+	uint64_t result = 0;
 	unsigned char buf[8];
 	fread(&buf, 8, 1, file);
 	for (int i = 0; i < 8; i++)
 		result |= (uint64_t)buf[i] << (i * 8);
-	return *((double*)&result);
+	return *(double*)&result;
 }
 
 char* read_string(FILE* file) {
