@@ -14,7 +14,7 @@
         <string value="practice"/>
       <member/>
       <member name="teacher">
-        <string value="Иванов Иван\" Иванович"/>
+        <string value="Иванов Иван\" \nИванович"/>
       <member/>
       <member name="format">
         <string value="inabsentia"/>
@@ -48,7 +48,7 @@
         <string value="Кронверкский пр., д.49, лит.А"/>
       <member/>
       <member name="room">
-        <number value=1308.000000/>
+        <string value="1308"/>
       <member/>
 <object/>
   <member/>
@@ -76,7 +76,7 @@
         <string value="Кронверкский пр., д.49, лит.А"/>
       <member/>
       <member name="room">
-        <number value=1411.000000/>
+        <string value="1411"/>
       <member/>
 <object/>
   <member/>
@@ -104,7 +104,7 @@
         <string value="Кронверкский пр., д.49, лит.А"/>
       <member/>
       <member name="room">
-        <number value=1410.000000/>
+        <string value="1410"/>
       <member/>
 <object/>
   <member/>
@@ -157,7 +157,7 @@
         <string value="Кронверкский пр., д.49, лит.А"/>
       <member/>
       <member name="room">
-        <number value=1020.000000/>
+        <string value="1020"/>
       <member/>
 <object/>
   <member/>
@@ -185,7 +185,7 @@
         <string value="Кронверкский пр., д.49, лит.А"/>
       <member/>
       <member name="room">
-        <number value=1020.000000/>
+        <string value="1020"/>
       <member/>
 <object/>
   <member/>

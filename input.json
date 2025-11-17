@@ -4,7 +4,7 @@
 		"time": "08:10",
 		"name": "Алгебра и алгоритмы",
 		"type": "practice",
-		"teacher": "Иванов Иван\" Иванович",
+		"teacher": "Иванов Иван\" \nИванович",
 		"format": "inabsentia",
 		"link": "zoom link"
 	},
@@ -17,7 +17,7 @@
 		"teacher": "Пётр [Петров] Петрович",
 		"format": "inperson",
 		"place": "Кронверкский пр., д.49, лит.А",
-		"room": 1308
+		"room": "1308"
 	},
 	
 	"f61a5c410946e0bbabb2493b79221b64": {
@@ -28,7 +28,7 @@
 		"teacher": "Пётр Петров Петрович",
 		"format": "inperson",
 		"place": "Кронверкский пр., д.49, лит.А",
-		"room": 1411
+		"room": "1411"
 	},
 	
 	"e9330c8b2e55f3a0a6edea35bdbefb1d": {
@@ -39,7 +39,7 @@
 		"teacher": "Зимоздра Татьяна Испульевна",
 		"format": "inperson",
 		"place": "Кронверкский пр., д.49, лит.А",
-		"room": 1410
+		"room": "1410"
 	},
 	
 	"4703a91571b5e6a98daa3637197eacff": {
@@ -60,7 +60,7 @@
 		"type": "lecture",
 		"format": "inperson",
 		"place": "Кронверкский пр., д.49, лит.А",
-		"room": 1020
+		"room": "1020"
 	},
 	
 	"51a75a8d23a89e005d5bfb8daa800a7c": {
@@ -71,7 +71,7 @@
 		"type": "practice",
 		"format": "inperson",
 		"place": "Кронверкский пр., д.49, лит.А",
-		"room": 1020
+		"room": "1020"
 	},
 	
 	"2e35af6dff67762c97eb7ab4b7fea927": {

@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 MAKEFLAGS += -k
 
-OUT=bin2ini
+OUT=bin2xml
 
 DEBUG?=0
 
